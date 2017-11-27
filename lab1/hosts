@@ -1,0 +1,47 @@
+# Create an OSEv3 group that contains the masters and nodes groups
+[OSEv3:children]
+masters
+nodes
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+# SSH user, this user should allow ssh based auth without requiring a password
+ansible_ssh_user=centos
+
+# If ansible_ssh_user is not root, ansible_become must be set to true
+ansible_become=true
+
+openshift_deployment_type=origin
+
+# uncomment the following to enable htpasswd authentication; defaults to DenyAllPasswordIdentityProvider
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+
+# Tech preview I guess??
+openshift_enable_service_catalog=false
+
+# Native HA with External LB VIPs
+openshift_master_cluster_method=native
+openshift_master_cluster_hostname=openshift-1.example.com
+openshift_master_cluster_public_hostname=openshift-1.example.com
+
+# Set the node selector for routers, ie. nodes that have an external IP
+openshift_router_selector='region=router'
+
+# set default subdomain
+openshift_master_default_subdomain=apps.openshift-1.example.com
+
+# host group for masters
+[masters]
+openshift-1-master.example.com
+
+# host group for etcd
+[etcd]
+openshift-1-master.example.com
+
+# host group for nodes, includes region info
+[nodes]
+openshift-1-master.example.com ansible_ssh_host=10.0.10.11
+openshift-1-node-1.example.com ansible_ssh_host=10.0.10.12 openshift_node_labels="{'region': 'primary', 'zone': 'prod'}"
+openshift-1-node-2.example.com ansible_ssh_host=10.0.10.13 openshift_node_labels="{'region': 'primary', 'zone': 'test'}"
+openshift-1-infra-1.example.com ansible_ssh_host=10.0.10.14 openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+openshift-1-router-1.example.com ansible_ssh_host=10.0.10.15 openshift_node_labels="{'region': 'router', 'zone': 'default'}"
