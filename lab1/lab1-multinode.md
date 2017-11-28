@@ -2,9 +2,9 @@
 
 ## Overview
 
-For the purposes of this workshop, we will be deploying a multinode OpenShift Origin cluster, but it will not be setup to be highly available. We will only have one master node, one infra node, and one external router node. There will be two worker nodes.
+For the purposes of this workshop, we will be deploying a multinode OpenShift Origin cluster (though it will not be setup to be highly available). We will deploy one master node, one infra node, and one external router node, and there will be two worker nodes.
 
-It's quite possible to automate many of the commands that will be run here. For example, there are [several examples](https://github.com/redhat-openstack/openshift-on-openstack) of using OpenStack Heat to automate the deployment of OpenShift into an OpenStack cloud, but that is not the point of this workshop.
+It's quite possible to automate many of the commands that will be run here. For example, there are [several examples](https://github.com/redhat-openstack/openshift-on-openstack) of using OpenStack Heat to automate the deployment of OpenShift into an OpenStack cloud, but that is not the point of this workshop, and instead we will be manually provisioning virtual machines and OpenStack networking components.
 
 We will also be utilizing the RPM based OpenShift deployment instead of the containerized version.
 
@@ -29,7 +29,7 @@ You will need a bash shell available somewhere, as well as the OpenStack command
 
 You will need at least three flavors such as the below.
 
-NOTE: Some flavors have ephemeral disks. They are required for Docker, as OpenShift will not deploy to a Docker instance that does not have a separate volume for Docker.
+NOTE: Some flavors have ephemeral disks. They are required for Docker, as OpenShift will not deploy to a Docker instance that does not have a separate volume for Docker. This could also be accomplished with Cinder volumes, but for the purposes of this lab ephermeral disks are used.
 
 NOTE: The `openstack` command is abbreviated to `os`.
 
@@ -58,7 +58,7 @@ DNS service is also quite important to deploying OpenShift Origin. In this works
 
 Sometimes it's easier to use a file that has all the variables needed defined, and we can just source that file on the command line to make the variables available.
 
-File in each of these variables, then source the file into your shell environment.
+File in each of these variables, then source the file into your shell environment. Create the file `~/openshift-workshoprc` and enter the below, as well as adding the proper variables.
 
 ```
 alias os=openstack
@@ -99,6 +99,8 @@ openshift-1-subnet
 ```
 
 Add a router.
+
+NOTE: The router we create here is a Neutron router, and is not the same as the OpenShift node we are calling a "router".
 
 ```
 os router create r-openshift-1
@@ -283,6 +285,8 @@ Router:
 $ os server add floating ip openshift-1-router-1 ${OPENSHIFT_FLOATING_IP_2}
 ```
 
+The `openshift-1-router-1` node will be the venue external clients use to access OpenShift provided resources.
+
 ## Test Ansible Connectivity
 
 While we are waiting for the instances to be completely ready, we can test connectivity from the utility server to the other nodes using Ansible.
@@ -312,7 +316,7 @@ Above we can see that all the nodes have had their hostname properly set.
 
 Now that we have built the instances and the infrastructure required, we can go ahead and actually deploy OpenShift.
 
-First, establish a screen session.
+First, establish a screen session. Screen is not necessary, but because the Ansible `config.yml` playbook will take a long time to run it's best to run it from a bash session that can be reattached, and won't die if the connection is lost.
 
 ```
 [centos@openshift-1-util ~]$ sudo yum install screen -y
@@ -393,5 +397,4 @@ Login with the user and password you added to the httpasswd file above.
 ```
 $ git show --oneline -s
 3973489 Merge pull request #6265 from openshift-cherrypick-robot/cherry-pick-6188-to-release-3.6
-
 ```
