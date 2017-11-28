@@ -4,7 +4,7 @@
 
 For the purposes of this workshop, we will be deploying a multinode OpenShift Origin cluster (though it will not be setup to be highly available). We will deploy one master node, one infra node, and one external router node, and there will be two worker nodes.
 
-It's quite possible to automate many of the commands that will be run here. For example, there are [several examples](https://github.com/redhat-openstack/openshift-on-openstack) of using OpenStack Heat to automate the deployment of OpenShift into an OpenStack cloud, but that is not the point of this workshop, and instead we will be manually provisioning virtual machines and OpenStack networking components.
+It's quite possible to automate many of the commands that will be run here. For example, there are [heat templates](https://github.com/redhat-openstack/openshift-on-openstack) to automate the deployment of OpenShift into an OpenStack cloud, but that is not the point of this workshop, and instead we will be manually provisioning virtual machines and OpenStack networking components using the OpenStack command line tool.
 
 We will also be utilizing the RPM based OpenShift deployment instead of the containerized version.
 
