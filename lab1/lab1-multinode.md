@@ -94,6 +94,9 @@ Fill in the variables in the `openshift-workshoprc` file.
 Source the file:
 
 ```
+$ cd openshift-workshop/lab1
+$ cp openshift-workshoprc.example openshift-workshoprc
+# edit openshift-workshoprc then source it
 $ . openshift-workshoprc
 ```
 
