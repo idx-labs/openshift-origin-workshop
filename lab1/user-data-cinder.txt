@@ -5,6 +5,8 @@ ssh_pwauth: True
 write_files:
   - content: |
       #!/bin/bash
+      sed -ie 's/Defaults\s\+requiretty/#Defaults   requiretty/g' /etc/sudoers
+      sed -ie 's/#UseDNS yes/UseDNS no/g' /etc/ssh/sshd_config
       echo `hostname | cut -f 1 -d "."`.example.com > /etc/hostname
       yum -y install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct ntp docker-1.12.6 NetworkManager
       systemctl enable ntpd
@@ -17,16 +19,11 @@ write_files:
       systemctl stop docker
       rm -rf /var/lib/docker
       systemctl enable docker
-      umount /mnt
-      sleep 1
-      wipefs -a /dev/vdb
-      sleep 1
       cat <<EOF > /etc/sysconfig/docker-storage-setup
       DEVS=/dev/vdb
       VG=docker-vg
+      touch /user-data-done.txt
       EOF
-      docker-storage-setup
-      reboot
 
     permissions: '0755'
     path: /usr/local/bin/prepare-for-openshift.sh

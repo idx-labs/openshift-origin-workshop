@@ -1,0 +1,26 @@
+# openshift-workshoprc
+
+#
+# This file should be sourced
+#
+
+export OPENSHIFT_NODES="openshift-1-master
+openshift-1-router-1
+openshift-1-node-1
+openshift-1-node-2
+openshift-1-infra-1"
+
+#
+# Fill in the below variables
+#
+
+alias os=openstack
+export OPENSHIFT_SSH_KEY=
+export OPENSHIFT_IMAGE_NAME=
+export OPENSHIFT_FLOATING_IP_NETWORK=
+export OPENSHIFT_FLOATING_IP_1=
+export OPENSHIFT_FLOATING_IP_2=
+export OPENSHIFT_FLOATING_IP_3=
+export OPENSHIFT_UTIL_FLAVOR=
+export OPENSHIFT_MASTER_FLAVOR=
+export OPENSHIFT_NODE_FLAVOR=

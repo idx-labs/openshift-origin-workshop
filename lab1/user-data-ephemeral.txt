@@ -1,0 +1,38 @@
+#cloud-config
+password: cent0s
+chpasswd: { expire: False }
+ssh_pwauth: True
+write_files:
+  - content: |
+      #!/bin/bash
+      sed -ie 's/Defaults\s\+requiretty/#Defaults   requiretty/g' /etc/sudoers
+      sed -ie 's/#UseDNS yes/UseDNS no/g' /etc/ssh/sshd_config
+      echo `hostname | cut -f 1 -d "."`.example.com > /etc/hostname
+      yum -y install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct ntp docker-1.12.6 NetworkManager
+      systemctl enable ntpd
+      # NOTE: This is not starting after reboot
+      systemctl start ntpd
+      ntpq -p
+      yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+      sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
+      systemctl enable NetworkManager
+      systemctl stop docker
+      rm -rf /var/lib/docker
+      systemctl enable docker
+      umount /mnt
+      sleep 1
+      wipefs -a /dev/vdb
+      sleep 1
+      cat <<EOF > /etc/sysconfig/docker-storage-setup
+      DEVS=/dev/vdb
+      VG=docker-vg
+      EOF
+      docker-storage-setup
+      touch /user-data-done.txt
+      reboot
+
+    permissions: '0755'
+    path: /usr/local/bin/prepare-for-openshift.sh
+
+runcmd:
+  - /usr/local/bin/prepare-for-openshift.sh
