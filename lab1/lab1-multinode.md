@@ -148,19 +148,19 @@ Add a router.
 NOTE: The router we create here is a Neutron router, and is not the same as the OpenShift node we are calling a "router".
 
 ```
-os router create r-openshift-1
+$ os router create r-openshift-1
 ```
 
 Add an external interface to the router.
 
 ```
-os router set --external-gateway ${OPENSHIFT_FLOATING_IP_NETWORK} r-openshift-1
+$ os router set --external-gateway ${OPENSHIFT_FLOATING_IP_NETWORK} r-openshift-1
 ```
 
 Add an interface to the router that is on the `openshift-1` network.
 
 ```
-os router add subnet r-openshift-1 openshift-1-subnet
+$ os router add subnet r-openshift-1 openshift-1-subnet
 ```
 
 Create three floating IP addresses.
@@ -212,13 +212,13 @@ openshift-1-util
 Once it has become available, add a floating IP to it.
 
 ```
-os server add floating ip openshift-1-util ${OPENSHIFT_FLOATING_IP_1}
+$ os server add floating ip openshift-1-util ${OPENSHIFT_FLOATING_IP_1}
 ```
 
 Test that you can access the utility node.
 
 ```
-ssh centos@${OPENSHIFT_FLOATING_IP_1} hostname
+$ ssh centos@${OPENSHIFT_FLOATING_IP_1} hostname
 openshift-1-util.novalocal
 ```
 
