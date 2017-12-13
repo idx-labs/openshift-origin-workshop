@@ -41,7 +41,7 @@ You will need at least three flavors such as the below. The flavors used don't h
 NOTE: In this lab the `openstack` command is abbreviated and aliased to `os`.
 
 ```
-$ os flavor list -c Name -c RAM -c Disk -c Ephemeral -c VPUSs
+$ os flavor list -c Name -c RAM -c Disk -c Ephemeral
 +------------------+-------+------+-----------+
 | Name             |   RAM | Disk | Ephemeral |
 +------------------+-------+------+-----------+
@@ -227,7 +227,7 @@ openshift-1-util.novalocal
 Setup the centos users ssh configuration file as per the below.
 
 ```
-$ ssh centos@${OPENSHIFT_FLOATING_IP_1}
+$ ssh -A centos@${OPENSHIFT_FLOATING_IP_1}
 [centos@openshift-1-util ~]$ echo "UserKnownHostsFile=/dev/null" > /home/centos/.ssh/config
 [centos@openshift-1-util ~]$ echo "StrictHostKeyChecking=no" >> /home/centos/.ssh/config
 [centos@openshift-1-util ~]$ chmod 600 /home/centos/.ssh/config
@@ -238,7 +238,7 @@ $ ssh centos@${OPENSHIFT_FLOATING_IP_1}
 ssh into the utility node and install dnsmasq.
 
 ```
-$ ssh centos@${OPENSHIFT_FLOATING_IP_1}
+$ ssh -A centos@${OPENSHIFT_FLOATING_IP_1}
 [centos@openshift-1-util ~]$ sudo yum install dnsmasq bind-utils -y
 ```
 
@@ -439,7 +439,7 @@ done
 We should test connectivity from the utility server to the other nodes using Ansible.
 
 ```
-[centos@openshift-1-util ~]$ cd ~/openshift-workshop/
+[centos@openshift-1-util ~]$ cd ~/openshift-workshop/lab1
 [centos@openshift-1-util openshift-workshop]$ ansible -m ping all
 openshift-1-infra-1.example.com | SUCCESS => {
     "changed": false,
@@ -535,6 +535,8 @@ Re-type new password:
 
 If you would like to access the `example.com` URLs from your workstation, configure `/etc/hosts`.
 
+Replace `${OPENSHIFT_FLOATING_IP_3}` with the actual IP address that we setup in the RC file.
+
 ```
 $ grep example.com /etc/hosts
 ${OPENSHIFT_FLOATING_IP_3} openshift-1-master.example.com
@@ -565,6 +567,7 @@ $ ./teardown.sh
 
 ## Troubleshooting
 
+* Often you can just rerun the Ansible playbook
 * Check the `~/ansible.log` file on the utility node for Ansible errors
 * Validate that Docker was properly configured in each of the non-util nodes
 * Ensure that Ansible can access each of the virtual machines: run `ansible -m ping all` from the utility node

@@ -33,4 +33,4 @@ openstack router delete r-openshift-1
 
 openstack subnet delete openshift-1-subnet
 openstack network delete openshift-1
-echo "Done deleteing network resources"
+echo "Done deleting network resources"
