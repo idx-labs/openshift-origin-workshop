@@ -190,8 +190,10 @@ Make it executable.
 
 Now that Minishift, KVM, and Docker Machine have been installed, we can use Minishift to create a small OpenShift instance.
 
+*NOTE: Depending on the size of your instance's memory allocation, the `--memory` option of the `minishift start` command can be increased. Leave 512-1024MB of memory for the OS, and dedicate the rest to the Minishift virtual machine. Below we show `${MEMORY_SIZE}GB`, replace ${MEMORY_SIZE} with an appropriate size, otherwise leave the memory option off and 2GB will be used.
+
 ```
-[centos@minishift ~]$ minishift start --memory 3GB
+[centos@minishift ~]$ minishift start --memory ${MEMORY_SIZE}GB
 SNIP!
 OpenShift server started.
 
