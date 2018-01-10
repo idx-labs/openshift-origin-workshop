@@ -22,8 +22,9 @@ write_files:
       cat <<EOF > /etc/sysconfig/docker-storage-setup
       DEVS=/dev/vdb
       VG=docker-vg
-      touch /user-data-done.txt
       EOF
+      docker-storage-setup
+      touch /user-data-done.txt
 
     permissions: '0755'
     path: /usr/local/bin/prepare-for-openshift.sh
