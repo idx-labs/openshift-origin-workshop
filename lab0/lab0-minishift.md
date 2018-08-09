@@ -280,7 +280,7 @@ Start docker.
 
 Start a Docker container that has a HTML5 VNC server running. The `ubuntu-desktop-lxde-vnc` image is has an HTML5 VNC server enabled. This will make it easier to access the various applications we will deploy to the Minishift/OpenShift system, and is not part of, or required for, Minishift.
 
-*NOTE: The VNC instance is not using SSL, and should only be used in a temporary lab or worshop environment.*
+*NOTE: The VNC instance is not using SSL, and should only be used in a temporary lab or workshop environment.*
 
 *NOTE: Port 6080 must be opened in the security groups of the particular cloud or infrastructure being used.*
 
