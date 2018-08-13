@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: consumer
+  name: consumer
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: consumer
+    spec:
+      containers:
+      - args:
+        - python
+        - consumer.py
+        - -p
+        - "5672"
+        - -s
+        - rabbitmq.test-rabbitmq
+        image: docker-registry.default.svc:5000/rabbitmq/rabbitmq-consumer
+        imagePullPolicy: IfNotPresent
+        name: curtis-consumer 
+        resources: {}
+      restartPolicy: Always
+status: {}
