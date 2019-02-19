@@ -30,13 +30,31 @@ You will need a bash shell available somewhere, as well as the OpenStack command
 
 NOTE: [OpenShift-Ansible](https://github.com/openshift/openshift-ansible/blob/master/roles/openshift_health_checker/openshift_checks/memory_availability.py) expects Masters to have at least 16GB of memory, and nodes/router/infra to have at least 8GB.
 
+### CentOS Cloud Image 
+
+Older CentOS cloud images may not work. This particular image is known to work with the deployment of OpenShift Origin/OKD. It may work with later images as well, but does not work with some older images.
+
+To install a new CentOS 7 image:
+
+```
+wget https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1901.qcow2
+openstack image create --disk-format qcow2 --container-format bare --file CentOS-7-x86_64-GenericCloud-1901.qcow2 centos7
+```
+
+As an informational point, the release of this CentOS image is:
+
+```
+$ cat /etc/redhat-release 
+CentOS Linux release 7.6.1810 (Core) 
+```
+
 ### Flavors
 
 OpenShift requires that Docker be backed by a separate volume. This can be done with ephemeral disks or Cinder volumes.  Persistent Cinder volumes are probably the best option if they are available.
 
 #### Ephemeral
 
-You will need at least three flavors such as the below. The flavors used don't have to be *exactly* the same, but should be similar. These are example flavors.
+You will need at least three flavors such as the below (or you could just use one flavor that has at least 16GB of RAM). The flavors used don't have to be *exactly* the same, but should be similar. These are example flavors.
 
 NOTE: In this lab the `openstack` command is abbreviated and aliased to `os`.
 
@@ -282,14 +300,16 @@ Validate that DNS is working.
 10.0.10.15
 ```
 
-Set the openshift-1 network to use the util server as a DNS server.
+Now exit from the util node.
+
+Back on your workstation, set the openshift-1 network to use the util server as a DNS server.
 
 ```
 $ os subnet set --no-dns-nameservers openshift-1-subnet
 $ os subnet set --dns-nameserver 10.0.10.10 openshift-1-subnet
 ```
 
-Reboot the util node (or reset its DHCP) to get the new DNS server.
+ssh into the util node again, and reboot it (or reset its DHCP) to get the new DNS server.
 
 ```
 [centos@openshift-1-util ~]$ sudo reboot
@@ -387,6 +407,8 @@ ssh -t centos@openshift-1-$s "sudo systemctl start docker"
 ssh -t centos@openshift-1-$s "sudo systemctl status docker"
 done
 ```
+
+*TODO: Add a validation script.*
 
 Docker should now be ready on each of these nodes.
 
@@ -519,6 +541,19 @@ NAME         STATUS                     AGE       VERSION
 10.0.10.15   Ready                      41m       v1.6.1+5115d708d7
 ```
 
+`oc version` should report the below:
+
+```
+[centos@openshift-1-master ~]$ oc version
+oc v3.6.1+008f2d5
+kubernetes v1.6.1+5115d708d7
+features: Basic-Auth GSSAPI Kerberos SPNEGO
+
+Server https://openshift-1.example.com:8443
+openshift v3.6.1+008f2d5
+kubernetes v1.6.1+5115d708d7
+```
+
 ### Add a User
 
 Login to the `openshift-1-master` node and edit the `/etc/origin/master/htpasswd` file using the `htpasswd` utility.
@@ -547,7 +582,7 @@ ${OPENSHIFT_FLOATING_IP_3} openshift-1.example.com
 
 Access the below URL. Note that it will be the same as what `openshift_master_cluster_public_hostname` is set to in the Ansible hosts file.
 
-https://openshift-1.example.com:8443
+* [OpenShift Web Interface](https://openshift-1.example.com:8443)
 
 Login with the user and password you added to the httpasswd file above.
 
