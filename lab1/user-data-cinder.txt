@@ -8,7 +8,7 @@ write_files:
       sed -ie 's/Defaults\s\+requiretty/#Defaults   requiretty/g' /etc/sudoers
       sed -ie 's/#UseDNS yes/UseDNS no/g' /etc/ssh/sshd_config
       echo `hostname | cut -f 1 -d "."`.example.com > /etc/hostname
-      yum -y install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct ntp docker-1.12.6 NetworkManager
+      yum -y install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct ntp docker NetworkManager
       systemctl enable ntpd
       # NOTE: This is not starting after reboot
       systemctl start ntpd
@@ -23,7 +23,6 @@ write_files:
       DEVS=/dev/vdb
       VG=docker-vg
       EOF
-      docker-storage-setup
       touch /user-data-done.txt
 
     permissions: '0755'
